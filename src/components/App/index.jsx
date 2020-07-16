@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { YMaps, withYMaps } from "react-yandex-maps";
 
 import { Modal } from "../Modal";
 import { DeliveryAddressForm } from "../DeliveryAddressForm";

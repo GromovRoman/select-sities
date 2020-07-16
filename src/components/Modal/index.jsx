@@ -10,6 +10,5 @@ export const Modal = ({ onClose, children }) => {
       {children}
     </div>
   );
-
   return createPortal(content(), modalRoot);
 };
