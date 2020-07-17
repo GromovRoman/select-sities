@@ -5,32 +5,27 @@ import React, { useState, useEffect } from "react";
 export const DeliveryAddressForm = ({
   ymaps,
 }) => {
-  const [suggest, setSuggest] = useState(null);
+  const [inputValue, setInputValues] = useState("Начните вводить адрес");
 
+  const onChangeInput = (event) => {
+    const value = event?.originalEvent?.item?.value || event?.target?.value;
+
+    setInputValues(value);
+  };
   useEffect(() => {
     ymaps.load((mapInstance) => {
-      setSuggest(new mapInstance.SuggestView("suggest"));
+      const suggest = new mapInstance.SuggestView("suggest");
+      suggest.events.add('select', onChangeInput);
     });
   }, [ymaps]);
 
-  const [values, setValues] = useState({ address: "Начните вводить адрес" });
-
-  const onChangeInput = (event) => {
-    const target = event.target;
-    const name = target.name;
-    const value = target.value;
-
-    setValues({ ...values, [name]: value });
-  };
-  
   return (
     <div>
       <div>Адрес доставки *</div>
       <input
         id={"suggest"}
-        name={"address"}
         type="text"
-        value={values.address}
+        value={inputValue}
         onChange={onChangeInput}
       />
     </div>
