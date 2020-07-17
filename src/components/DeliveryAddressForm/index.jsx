@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import styles from "./index.module.scss";
 
-export const DeliveryAddressForm = ({ ymaps }) => {
+export const DeliveryAddressForm = ({ ymaps, onClose, onSetAddres }) => {
   const inputText = "Начните вводить адрес";
   const [inputValue, setInputValues] = useState(inputText);
   const [errorText, setErrorText] = useState(null);
@@ -56,6 +56,9 @@ export const DeliveryAddressForm = ({ ymaps }) => {
         JSON.stringify(deliveryAddress ? [...deliveryAddress, value] : [value])
       );
 
+    onClose();
+    onSetAddres(value)
+
     const dataPattern = {
       value: value,
       lat: "",
@@ -82,6 +85,7 @@ export const DeliveryAddressForm = ({ ymaps }) => {
         <div>
           {address.map((address) => (
             <p
+              key={address}
               onClick={() => setInputValues(address)}
               className={styles.prevAddress}
             >
