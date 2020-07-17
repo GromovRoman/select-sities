@@ -5,7 +5,7 @@ import styles from "./index.module.scss";
 
 const modalRoot = document.getElementById("modal");
 
-export const Modal = ({ onClose, children }) => {
+export const Modal = ({ onClose, children, contentWidth }) => {
   const ref = useRef();
 
   const handleClickOutside = (event) =>  {
@@ -15,17 +15,17 @@ export const Modal = ({ onClose, children }) => {
       onClose();
     }
   }
+  
   const content = () => (
-    <div  className={styles.modal} >
-      <div  className={styles.content} onClick={handleClickOutside}>
-        <div className={styles.close}>
-          X
-        </div>
-        <div ref={ref}>
-          {children}
-        </div>
+    <div  className={styles.modal} onClick={handleClickOutside}>
+      <div className={styles.close}>
+        X
+      </div>
+      <div ref={ref} className={styles.content} style={{width: contentWidth}}>
+        {children}
       </div>
     </div>
   );
+
   return createPortal(content(), modalRoot);
 };

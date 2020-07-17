@@ -5,17 +5,18 @@ import { Modal } from "../Modal";
 import { DeliveryAddressForm } from "../DeliveryAddressForm";
 
 import styles from './index.module.scss';
+import { useEffect } from "react";
 
 function App() {
-  const [isAddress, setAddress] = useState(false);
+  const [address, setAddress] = useState(null);
   const [isModal, setIsModal] = useState(false);
   const hocWithYMaps = withYMaps(DeliveryAddressForm, true);
   
   return (
     <div className={styles.app}>
       <div className="content">
-        {isAddress ? (
-          <input type={"text"} />
+        {address ? (
+          <input type={"text"} value={address}/>
         ) : (
           <button
             autoFocus
@@ -28,7 +29,7 @@ function App() {
         )}
       </div>
       {isModal && (
-        <Modal onClose={() => setIsModal(false)}>
+        <Modal contentWidth={'700px'} onClose={() => setIsModal(false)}>
           <YMaps>
             {hocWithYMaps()}
           </YMaps>
