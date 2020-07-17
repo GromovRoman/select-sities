@@ -1,9 +1,18 @@
-import React, { useState, useMemo } from "react";
-import { YMaps, withYMaps } from "react-yandex-maps";
+import React, { useState, useEffect } from "react";
 
 // TODO: to add debounce
 
-export const DeliveryAddressForm = () => {
+export const DeliveryAddressForm = ({
+  ymaps,
+}) => {
+  const [suggest, setSuggest] = useState(null);
+
+  useEffect(() => {
+    ymaps.load((mapInstance) => {
+      setSuggest(new mapInstance.SuggestView("suggest"));
+    });
+  }, [ymaps]);
+
   const [values, setValues] = useState({ address: "Начните вводить адрес" });
 
   const onChangeInput = (event) => {
@@ -13,36 +22,17 @@ export const DeliveryAddressForm = () => {
 
     setValues({ ...values, [name]: value });
   };
-
-  const content = useMemo(() => {
-    return ({ ymaps }) => {
-      let suggest = null;
-
-      ymaps.load((mapInstance) => {
-        suggest = new mapInstance.SuggestView("suggest");
-      });
-      return (
-        <div>
-          <div>Адрес доставки *</div>
-          <input
-            id={"suggest"}
-            //name={"address"}
-            type="text"
-            //value={values.address}
-            //onChange={onChangeInput}
-          />
-        </div>
-      );
-    };
-  }, []);
-
-  const Connected = useMemo(() => {
-    return withYMaps(content, true);
-  }, [content]);
-
+  
   return (
-    <YMaps>
-      <Connected />
-    </YMaps>
+    <div>
+      <div>Адрес доставки *</div>
+      <input
+        id={"suggest"}
+        name={"address"}
+        type="text"
+        value={values.address}
+        onChange={onChangeInput}
+      />
+    </div>
   );
 };
