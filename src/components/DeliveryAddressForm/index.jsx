@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { debounce } from 'lodash';
 
 import styles from "./index.module.scss";
 
@@ -6,23 +7,6 @@ export const DeliveryAddressForm = ({ ymaps, onClose, onSetAddres }) => {
   const inputText = "Начните вводить адрес";
   const [inputValue, setInputValues] = useState(inputText);
   const [errorText, setErrorText] = useState(null);
-
-  const onChangeInput = (event) => {
-    const value = event?.originalEvent
-      ? event.get("item").value
-      : event?.target?.value;
-
-    onValidate(value);
-
-    setInputValues(value);
-  };
-
-  useEffect(() => {
-    ymaps.load((mapInstance) => {
-      const suggest = new mapInstance.SuggestView("suggest");
-      suggest.events.add("select", onChangeInput);
-    });
-  }, [ymaps]);
 
   const onValidate = (value) => {
     const arrData = value.split(",");
@@ -33,6 +17,25 @@ export const DeliveryAddressForm = ({ ymaps, onClose, onSetAddres }) => {
       );
     else setErrorText(null);
   };
+
+  const onValidateDebounce = debounce(onValidate, 350);
+
+  const onChangeInput = (event) => {
+    const value = event?.originalEvent
+      ? event.get("item").value
+      : event?.target?.value;
+
+    onValidateDebounce(value);
+
+    setInputValues(value);
+  };
+
+  useEffect(() => {
+    ymaps.load((mapInstance) => {
+      const suggest = new mapInstance.SuggestView("suggest");
+      suggest.events.add("select", onChangeInput);
+    });
+  }, [ymaps]);
 
   const showBtn = () =>
     inputValue !== inputText &&
@@ -100,6 +103,7 @@ export const DeliveryAddressForm = ({ ymaps, onClose, onSetAddres }) => {
   return (
     <div className={styles.content}>
       <div className={styles.title}>Адрес доставки *</div>
+      <p className={styles.error}>{errorText}</p>
       <input
         className={styles.input}
         id={"suggest"}
@@ -111,7 +115,6 @@ export const DeliveryAddressForm = ({ ymaps, onClose, onSetAddres }) => {
         }}
       />
       {inputValue === inputText && showAddresFromStorage()}
-      <p className={styles.error}>{errorText}</p>
       {showBtn()}
     </div>
   );
